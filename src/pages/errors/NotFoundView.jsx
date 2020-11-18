@@ -6,6 +6,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import NotFoundImage from '../../static/images/notFound.svg'
+import { NavLink } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +38,7 @@ const NotFoundView = () => {
         justifyContent="center"
       >
         <Container maxWidth="md">
-          <h2 className="bold">
+          <h2 className="bold text-center">
             404: The page you are looking for isn’t here
           </h2>
           <Typography
@@ -46,7 +47,10 @@ const NotFoundView = () => {
             variant="subtitle2"
           >
             You either tried some shady route or you came here by mistake.
-            Whichever it is, try using the navigation
+            Whichever it is, 
+            <NavLink to="/">
+              {' go back to home!'}
+            </NavLink>
           </Typography>
           <Box textAlign="center">
             <img

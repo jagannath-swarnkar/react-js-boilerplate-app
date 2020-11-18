@@ -1,0 +1,12 @@
+select{
+    outline: none !important;
+    text-transform: capitalize !important;
+}
+.header-select{
+    border-radius: 6px;
+    height: 33px;
+    width: 160px;
+}
+.capitalize{
+    text-transform: capitalize !important;
+}

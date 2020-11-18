@@ -1,6 +1,12 @@
-const { default: NotFoundView } = require("./pages/errors/NotFoundView");
+import Index from "./pages/index";
+import NotFoundView from './pages/errors/NotFoundView'
 
-const BaseRoutes = [
+const PublicRoutes = [
+    {
+        path: '/',
+        name: 'home',
+        component: Index
+    },
     {
         path: '*',
         name: 'Page Not Found',
@@ -8,4 +14,11 @@ const BaseRoutes = [
     }
 ]
 
-export { BaseRoutes };
+const PrivateRoutes = [
+    
+]
+
+export { 
+    PublicRoutes,
+    PrivateRoutes
+ };

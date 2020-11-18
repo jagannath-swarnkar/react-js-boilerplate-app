@@ -1,16 +1,48 @@
-import { Button } from '@material-ui/core';
 import './App.scss';
-import NotFoundView from './pages/errors/NotFoundView';
-function App() {
-  return (
-    <div className="App">
-      <NotFoundView />
-      {/* <button className="btn btn-danger">
-        Welcome to React js boilerplate
-      </button>
-      <Button variant="outlined" >hello</Button> */}
+import { PublicRoutes, PrivateRoutes } from './routes';
+import { 
+  BrowserRouter as Router, 
+  Redirect, 
+  Route, 
+  Switch 
+} from "react-router-dom";
+import { getLocalStorage } from './lib/session';
+import { I18nProvider, LOCALES } from './i18n';
+import { useSelector } from 'react-redux';
 
-    </div>
+function App(props) {
+  const lang = useSelector(state => state.config.lang)
+  const PrivateRoute = (props) => {
+    if(!getLocalStorage('token')){
+      return <Redirect to={{pathname:"/auth"}} />
+    }
+    return <Route exact {...props} />
+  }
+
+  return (
+    <I18nProvider locale={lang || LOCALES.ENGLISH}>
+      <Router>
+        <Switch>
+          {PublicRoutes.map(({ component: Cmp, ...route }, index) => 
+            <Route 
+              exact 
+              key={'publicRoute' + index} 
+              {...route}
+              render={routeProps => <Cmp {...props} {...routeProps} />} 
+            />
+          )}
+
+          {PrivateRoutes.map(({ component: Cmp, ...route }, index) => 
+            <PrivateRoute 
+              exact 
+              key={'privateRoute' + index} 
+              {...route}
+              render={routeProps => <Cmp {...props} {...routeProps} />} 
+            />
+          )}
+        </Switch>
+      </Router>
+    </I18nProvider>
   );
 }
 
