@@ -1,0 +1,18 @@
+.gallery_header{
+    display: flex;
+}
+
+.nav{
+    cursor: pointer;
+}
+.nav.active{
+    border-bottom: 2px solid green;
+}
+.img_submit{
+    margin-left: 122px !important;
+}
+.image{
+    border: 12px solid #00000014;
+    min-width: 300px;
+    min-height: 300px;
+}
