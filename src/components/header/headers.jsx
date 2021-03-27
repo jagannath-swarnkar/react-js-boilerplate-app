@@ -18,7 +18,8 @@ import { APP_NAME } from '../../lib/config';
 import './header.css';
 import { LOCALES } from '../../i18n';
 import { useDispatch } from 'react-redux';
-import { LANG } from '../../redux/actionTypes/config';
+import { LANG } from '../../redux/actionTypes';
+import { open_drawer } from '../../lib/global';
 
 const langList = LOCALES
 const useStyles = makeStyles((theme) => ({
@@ -173,14 +174,22 @@ const Headers = () => {
     </Menu>
   );
 
+  const handleToggleDrawer = () => {
+    open_drawer("SIDEBAR", {
+      paperClass: "backNavMenu"
+    }, 'right')
+  }
 
+  
   return (
-    <div className={classes.grow}>
+    // eslint-disable-next-line
+    <div className={classes.grow, "main-header"}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
             edge="start"
             className={classes.menuButton}
+            onClick={handleToggleDrawer}
             color="inherit"
             aria-label="open drawer"
           >

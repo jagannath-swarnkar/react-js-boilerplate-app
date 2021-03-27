@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Button } from '@material-ui/core';
 import './counter.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { INCREMENT } from '../../redux/actionTypes/counter';
+import { INCREMENT } from '../../redux/actionTypes';
 
 export default function Counter() {
     const dispatch = useDispatch();

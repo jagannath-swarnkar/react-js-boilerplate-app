@@ -1,17 +1,15 @@
 import React, { PureComponent } from 'react'
-import T from '../../i18n/translate'
-import Counter from '../counter/counter'
-import Headers from '../header/headers'
+import GalleryComponent from '../../components/gallery'
+import Layout from '../../components/Layout'
+// import T from '../../i18n/translate'
 
 export class Index extends PureComponent {
     render() {
         return (
             <React.Fragment>
-                <Headers />
-                <Counter />
-                <p className="text-center pt-5">
-                    {T('welcome')}
-                </p>
+                <Layout>
+                    <GalleryComponent />
+                </Layout>
             </React.Fragment>
         ) 
     }

@@ -1,9 +1,15 @@
-.bold{
-    font-weight: bold;
-}
-.Bold{
-    font-weight: bold !important;
-}
+
 button{
     outline: none !important;
+}
+.backNavMenu {
+    // background-color: transparent !important;
+    width: 75vw !important;
+    max-width: 400px !important;
+    float: right !important;
+    color: inherit !important;
+}
+.backNavMenu > div {
+    width: 75vw !important;
+    max-width: 400px !important;
 }
