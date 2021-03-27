@@ -31,3 +31,5 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - - react-router-dom ( for routing )
 - - Redux ( for global state management )
 - - Scss (node-scss) - for styling 
+
+Thanks:
