@@ -1,27 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { useHistory } from 'react-router';
+
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 import { APP_NAME } from '../../lib/config';
-import './header.css';
-import { LOCALES } from '../../i18n';
 import { useDispatch } from 'react-redux';
-import { LANG } from '../../redux/actionTypes';
+import useTheme from '../../hooks/useTheme';
+import { SideNavbarToggleSubject } from '../../lib/rxSubject';
+import { removeLocalStorageKey, setLocalStorage } from '../../lib/session';
+import { actionThemeChange } from '../../redux/actions/home.action';
+import isMobile from '../../hooks/isMobile';
 import { open_drawer } from '../../lib/global';
 
-const langList = LOCALES
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -88,9 +88,18 @@ const useStyles = makeStyles((theme) => ({
 
 const Headers = () => {
   const dispatch = useDispatch()
+  const [theme, themeType] = useTheme();
+  const [mobileView] = isMobile()
+  const Route = useHistory();
   const classes = useStyles();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [minimize, setMinimize] = useState(false);
+
+  useEffect(()=>{
+    SideNavbarToggleSubject.subscribe((flag)=>setMinimize(flag || false))
+  },[])
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -112,9 +121,16 @@ const Headers = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const langSelectHandler = (e) => {
-    console.log(e.target.value);
-    dispatch({type: LANG, payload: e.target.value})
+  const handleThemeChange = () => {
+    const newTheme = themeType === "dark" ? "light" : "dark";
+    setLocalStorage('theme', newTheme)
+    dispatch(actionThemeChange(newTheme))
+  }
+
+  const handleLogout = () => {
+    handleMenuClose();
+    removeLocalStorageKey('token');
+    Route.push('/auth')
   }
 
   const menuId = 'primary-search-account-menu';
@@ -128,8 +144,16 @@ const Headers = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
+      <MenuItem onClick={handleThemeChange}>
+        <IconButton><Brightness4Icon/></IconButton>
+        {themeType === 'dark' ? "Light Theme": "Dark Theme"}
+      </MenuItem>
+      <MenuItem onClick={handleLogout}>
+        <IconButton><ExitToAppIcon /></IconButton>
+        <Typography>Logout</Typography>
+      </MenuItem>
     </Menu>
   );
 
@@ -144,23 +168,24 @@ const Headers = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      
+      {/* <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <MailIcon />
           </Badge>
         </IconButton>
         <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
+      </MenuItem> */}
+      {/* <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      </MenuItem> */}
+      {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -170,21 +195,59 @@ const Headers = () => {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
+      </MenuItem> */}
+      <MenuItem onClick={handleThemeChange}>
+        <IconButton><Brightness4Icon/></IconButton>
+        {themeType === 'dark' ? "Light Theme": "Dark Theme"}
       </MenuItem>
+      <MenuItem onClick={handleLogout}>
+        <IconButton><ExitToAppIcon /></IconButton>
+        <Typography>Logout</Typography>
+      </MenuItem>
+
     </Menu>
   );
 
-  const handleToggleDrawer = () => {
-    open_drawer("SIDEBAR", {
-      paperClass: "backNavMenu"
-    }, 'right')
-  }
+  // const handleToggleDrawer = () => {
+  //   open_drawer("SIDEBAR", {
+  //     paperClass: "backNavMenu"
+  //   }, 'right')
+  // }
 
+  const handleToggleDrawer = () => {
+    if(mobileView){
+      open_drawer("SIDEBAR",{
+        paperClass: "mv_side_navbar"
+      },"right")
+    }else{
+      SideNavbarToggleSubject.next(!minimize)
+    }
+  }
   
   return (
     // eslint-disable-next-line
-    <div className={classes.grow, "main-header"}>
-      <AppBar position="static">
+    <div className={`${classes.grow} main-header ${mobileView ? "mobile": "desktop"}`}>
+      {!mobileView ? 
+      (<AppBar
+        style={{
+          backgroundColor: theme.headerColor,
+
+        }} 
+        className={`header_sidebar ${minimize ? "min" : "max"}`}
+        position="static"
+      >
+        <Typography className={classes.title} variant="h6" noWrap>
+              Admin Panel
+        </Typography>
+      </AppBar>):<></>}
+
+      <AppBar 
+        style={{
+          backgroundColor: theme.headerColor,
+
+        }} 
+        className={`header_body ${minimize ? "min" : "max"}`}
+        position="static">
         <Toolbar>
           <IconButton
             edge="start"
@@ -195,10 +258,14 @@ const Headers = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
+          {mobileView ? (
+            <div className="w-100 text-start">
+                <h4 className="m-0">{APP_NAME}</h4>
+            </div>):<></>}
+          <Typography className={classes.title} variant="h5" noWrap>
             {APP_NAME}
           </Typography>
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -210,32 +277,21 @@ const Headers = () => {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </div>
+          </div> */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-
-    <select className="header-select" onChange={langSelectHandler}>
-      {Object.keys(langList).map((lan, i)=>{
-        return (
-          <option key={lan+i} value={langList[lan]} >
-            {lan}
-          </option>
-        )
-      })}
-    </select>
-
-
-
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
+            </IconButton> */}
+
+            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
+
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -246,7 +302,9 @@ const Headers = () => {
             >
               <AccountCircle />
             </IconButton>
+
           </div>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"

@@ -1,0 +1,102 @@
+.login {
+    height: 100vh;
+    /* border: 2px solid red; */
+}
+.login_page{
+    background-image: url(../images/login_background.jpeg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.login__container {
+    /* height: 100%;     */
+    /* border: 1px solid gray !important; */
+    height: 500px;
+    overflow: auto;
+    z-index: 1;
+}
+.login__image {
+    height: 100%;
+    width: 400px;
+}
+.login__image img {
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.form__section {
+    width: 400px;
+    position: relative;
+    /* min-height: 200px; */
+    background: white;
+}
+.form {
+    height: 100%;
+    position: relative;
+}
+.back__arrow {
+    position: absolute;
+    cursor: pointer;
+    top: 40px;
+    left: 20px;
+}
+.register__btn {
+    position: absolute;
+    bottom: 40px;
+    right: 50px;
+}
+.input__textField {
+    width: 300px;
+    height: 45px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    border: 2px solid #e4e4e4;
+    padding: 10px;
+}
+.login_btn {
+    width: 300px;
+    height: 50px;
+    position: absolute;
+    bottom: 33px;
+    right: 0;
+    left: 0;
+    
+}
+.register__btn {
+    width: 100px;
+    height: 50px;
+}
+
+
+
+.remember__forgetPass {
+    width: 300px;
+    padding-left: 10px;
+}
+.MuiIconButton-label input {
+    display: none !important;
+}
+.remember__forgetPass a {
+    color: #000;
+    /* font-weight: bold; */
+    cursor: pointer;
+}
+.remember__forgetPass a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+.other_links a {
+    text-decoration: underline;
+}
+
+.MuiSvgIcon-root path {
+    /* display: none; */
+}
+
+@media only screen and (max-width: 855px) {
+    .login__image {
+        display: none;
+    }
+}

@@ -4,6 +4,7 @@ import Dialog from "@material-ui/core/Dialog";
 //material ui dialog content
 import DialogContent from "@material-ui/core/DialogContent";
 import { withStyles } from "@material-ui/core/styles";
+import AddGlance from "./AddGlance";
 // import ToasterDrawer from "../drawer/toaster-drawer/toaster-drawer";
 
 const styles = {
@@ -21,13 +22,13 @@ const ModalDialog = (props) => {
   let { classes, dialogData } = props;
   let dialogContent = () => {
     switch (props.type) {
-      case "WalletFilter":
-        return (<></>
-          // <ToasterDrawer
-          //   {...props.dialogData}
-          //   handlerDialog={props.handlerDialog}
-          //   onClose={props.handleClose}
-          // />
+      case "ADD_GLANCE":
+        return (
+          <AddGlance
+            {...props.dialogData}
+            handlerDialog={props.handlerDialog}
+            onClose={props.handleClose}
+          />
         );
 
       default:
@@ -65,28 +66,29 @@ const ModalDialog = (props) => {
       {...props.dialogModel}>
       <DialogContent
         test="DialogContent"
-        className={classes.root}>
+        className={classes.root, 'mu-dialog-content'}>
         <div className="w-100">{dialogContent()}</div>
       </DialogContent>
-      <style jsx>{`
+      <style>{`
         :global(.mu-dialog > div > div) {
           overflow-y: visible !important;
         }
         :global(.mu-dialog) {
           margin: 11px !important;
         }
-        :global(.MuiDialog-paper) {
-          min-width: 450px;
+        :global(.MuiPaper-root.MuiDialog-paper) {
+          min-width: 450px !important;
         }
 
         @media only screen and (max-width: 767px) {
           :global(.mu-dialog > div > div) {
             max-width: 90vw !important;
+            min-width: 450px !important;
           }
 
-          :global(.MuiDialog-paper) {
-            min-width: auto !important;
-          }
+          // :global(.MuiDialog-paper) {
+          //   min-width: auto !important;
+          // }
         }
       `}</style>
     </Dialog>

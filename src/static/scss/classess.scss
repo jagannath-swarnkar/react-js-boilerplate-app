@@ -9,5 +9,23 @@
 }
 .app-link {
     color: #61dafb;
-  }
+}
   
+.white{
+    color: #fff !important;
+}
+
+.capitalize{
+    text-transform: capitalize !important;
+}
+
+.header_color{
+	background-color: $header_color !important;
+}
+
+#overlay{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    background-color: #00000085;
+}

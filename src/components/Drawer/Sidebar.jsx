@@ -1,83 +1,110 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ExploreIcon from '@material-ui/icons/Explore';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import EmailIcon from '@material-ui/icons/Email';
-import Divider from '@material-ui/core/Divider';
-import Wrapper from '../../hoc/Wrapper';
-import ChatIcon from '@material-ui/icons/Chat';
-import MapIcon from '@material-ui/icons/Map';
-import CreditCardIcon from '@material-ui/icons/CreditCard';
-import AvatarImg from '../Images/AvatarImg';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import { NavLink, useHistory } from 'react-router-dom';
+import sidebarList from '../sidebar';
+import useTheme from '../../hooks/useTheme';
+import { SideNavbarToggleSubject } from '../../lib/rxSubject';
+import { ListItemText } from '@material-ui/core';
+import isMobile from '../../hooks/isMobile';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
+}));
 
 const Sidebar = () => {
-    return (
-        <Wrapper>
-            <div className="side_nav_menu">
-                <div className="row m-0 flex-nowrap align-items-center">
-                    <div className="col-12 p-0 m-2 row">
-                        <AvatarImg width="60px" height="60px" >KL</AvatarImg>
-                        <div className="px-3">
-                            <p className="profileName m-0">
-                                Katherine
-                            </p>
-                            <p className="text-muted">
-                                katherine.langford
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button>
-                        <ListItemIcon><AccountBoxIcon /></ListItemIcon>
-                        <ListItemText primary={"Profile"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon><ExploreIcon/></ListItemIcon>
-                        <ListItemText primary={"Explore"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon><ChatIcon/></ListItemIcon>
-                        <ListItemText primary={"Chat"} />
-                    </ListItem> 
-                </List>
-                <Divider />
-                <List>
-                    <ListItem button>
-                        <ListItemIcon><EmailIcon/></ListItemIcon>
-                        <ListItemText primary={"Contact"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon><MapIcon/></ListItemIcon>
-                        <ListItemText primary={"Address"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon><CreditCardIcon/></ListItemIcon>
-                        <ListItemText primary={"Cards"} />
-                    </ListItem>
-                    
-                </List>
-            </div>
-            <style jsx="true">{`
-                .side_nav_menu{
-                    width: 100%;
-                    height: 100vh;
-                    position: relative;
-                    float: right;
-                }
-                .profileName{
-                    font-size: 5.266vw;
-                    font-family: "Avenir-Roman", sans-serif !important;
-                    text-transform: capitalize;
-                    font-weight: bold;
-                }
-            `}</style>
-        </Wrapper>
-    )
+  const [theme] = useTheme()
+  const [mobileView] = isMobile()
+  const classes = useStyles();
+  const [open, setOpen] = React.useState({});
+  const [minimize, setMinimize] = useState( false);
+  const Route = useHistory()
+  const {pathname=""} = Route.location;
+
+  useEffect(()=>{
+    SideNavbarToggleSubject.subscribe((flag)=>setMinimize(flag || false))
+  },[])
+
+  const handleClick = (title, item) => {
+    if(mobileView) return;
+    if(minimize){
+      SideNavbarToggleSubject.next()
+    }
+    setOpen(prev=>{
+        return {
+            ...prev,
+            [title]: !prev[title]
+        }
+    });
+    if(item.path){
+      Route.push(item.path)
+    }
+  };
+
+  const itemList = sidebarList(theme.iconColor)
+  return (
+    <List
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      style={{
+          color: theme.textColor,
+          backgroundColor: theme.drawerBgColor,
+          boxShadow: theme.drawerShadow,
+          height: "100%"
+      }}
+      className={classes.root}
+    >
+      {itemList.map((item,index)=>{
+          return (
+              <React.Fragment key={index}>
+                <ListItem 
+                  className={`d-flex justify-content-between side_nav_item ${pathname === item.path ? 'active' : ''}`} 
+                  button 
+                  onClick={()=>handleClick(item.title, item)}>
+                    <span 
+                      className="d-flex sidebar nav__link" 
+                      style={{color: theme.textColor}}>
+                        <ListItemIcon style={{color: pathname === item.path ? "#fff" : theme.iconColor}}>
+                            {item.icon}
+                        </ListItemIcon>
+                        {!minimize && <ListItemText className="nav_item_text" primary={item.title} />}
+                    </span>
+                    { !minimize && item.children && item.children.length ? (open[item.title] ? <ExpandLess/> : <ExpandMore/>) : null}
+                </ListItem>
+                {item.children && item.children.map((childItem,childIndex)=>{
+                    return (
+                        <Collapse key={childItem.title + childIndex} in={open[item.title]} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                            <NavLink  style={{color: theme.textColor}} className="d-flex sidebar nav__link" to={{pathname: childItem.path}}>
+                                <ListItem button className={classes.nested}>
+                                    <ListItemIcon 
+                                      style={{color: pathname === item.path ? "#fff" : theme.iconColor}}>
+                                        {childItem.icon}
+                                    </ListItemIcon>
+                                    {!minimize && <ListItemText className="nav_item_text" primary={childItem.title} />}
+                                </ListItem>
+                            </NavLink>
+                            </List>
+                        </Collapse>
+                    )
+                })}
+              </React.Fragment>
+          )
+      })}
+
+    </List>
+  );
 }
 
-export default Sidebar
+export default Sidebar;

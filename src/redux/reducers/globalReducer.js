@@ -1,4 +1,4 @@
-import { APP_TITLE, IS_MOBILE, LANG, THEME } from "../actionTypes"
+import { APP_TITLE, IS_MOBILE, LANG, THEME, THEME_CHANGE } from "../actionTypes"
 
 const initialState = {
     appTitle: "Chat Module",
@@ -28,6 +28,12 @@ const globalReducer = (state=initialState, action) => {
             return {
                 ...state,
                 lang: action.payload
+            }
+    
+        case THEME_CHANGE:
+            return {
+                ...state,
+                theme: action.payload
             }
         default: 
             return state;

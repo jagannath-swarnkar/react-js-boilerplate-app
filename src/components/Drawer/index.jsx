@@ -2,6 +2,7 @@
 
 import { Drawer } from '@material-ui/core';
 import React from 'react'
+import MvSidebar from './MvSidebar';
 import Sidebar from './Sidebar';
 import ToasterDrawer from './ToasterDrawer';
 
@@ -20,7 +21,7 @@ const CustomDrawer = (props) => {
                 )
             case "SIDEBAR":
                 return (
-                    <Sidebar
+                    <MvSidebar
                         {...props.dialogData}
                         handlerDialog={props.handlerDialog}
                         onClose={props.handleClose}

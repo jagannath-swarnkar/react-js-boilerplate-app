@@ -1,7 +1,7 @@
 import { INIT_LANGUAGE_CHANGE, IS_MOBILE } from "../actionTypes";
 
 export const setMobileView = (data) => {
-    console.log('data', data)
+    // console.log('data', data)
     return {
       type: IS_MOBILE,
       payload: data,

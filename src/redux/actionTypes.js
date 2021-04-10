@@ -8,3 +8,5 @@ export const INIT_LANGUAGE_CHANGE = "INIT_LANGUAGE_CHANGE";
 export const SET_COUNTER = "SET_COUNTER";
 export const INCREMENT = 'INCREMENT';
 export const DECREMENT = 'DECREMENT';
+
+export const THEME_CHANGE = "THEME_CHANGE";

@@ -1,0 +1,44 @@
+@import './variables.scss';
+.dialog-btn{
+    .MuiButton-label{
+        font-weight: bold;
+    }
+}
+
+.manual-dialog{
+    .MuiDialog-paperScrollPaper{
+        width: 100%;
+      }
+}
+
+.cancel-btn{
+    background-color: tomato !important;
+}
+.cropper{
+    background-color: ghostwhite;
+    text-align: center;
+}
+
+/* sidebar  */
+.sidebar.nav__link{
+    color: $txt-color;
+    text-decoration: none;
+}
+.sidebar.nav__link:hover{
+    color: $txt-color;
+    text-decoration: none;
+}
+
+.side_nav_item.active{
+    background: $app-color !important;
+    .sidebar.nav__link{
+        color: #fff !important
+    }
+    .nav__icon{
+        color: #fff !important;
+    }
+    .nav_item_text>span{
+        font-weight: bold;
+    }
+
+}

@@ -24,7 +24,7 @@ const GalleryComponent = () => {
     const getData = (pageCount) => {
         getGalleryImages(pageCount).then((res)=>{
             if(res && res.data){
-                console.log('res.data', res.data)
+                // console.log('res.data', res.data)
                 const result = res.data.map((item)=>({
                     src: item.urls.regular,
                     thumbnail: item.urls.thumb,
@@ -46,7 +46,7 @@ const GalleryComponent = () => {
             }
         }).catch(error=>{
             stop_page_loader()
-            console.log('error', error)
+            console.error(error)
         })
     }
     return (
@@ -54,7 +54,7 @@ const GalleryComponent = () => {
             <PaginationIndicator
                 id="home-body"
                 pageEventHandler={()=>{
-                    console.log('pageEventHandler')
+                    // console.log('pageEventHandler')
                     if(page > 1){
                         start_page_loader()
                         setPage(p=>p+1)

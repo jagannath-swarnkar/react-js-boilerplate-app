@@ -20,8 +20,8 @@ const PaginationIndicator = (props) => {
 
   useEffect(() => {
     const elementNode = document.getElementById(id) || elementRef && elementRef.current;
-    console.log('elementNode', elementNode)
-    console.log('')
+    // console.log('elementNode', elementNode)
+    console.info('')
     if (elementNode) {
       elementNode.addEventListener("scroll", () => {
         const isScrollTouchingBottom = around(parseInt(elementNode.scrollHeight), parseInt(elementNode.scrollTop) + parseInt(elementNode.clientHeight));

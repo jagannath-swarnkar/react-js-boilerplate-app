@@ -1,0 +1,13 @@
+.info-box{
+    display: block;
+    min-height: 120px;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 1px 1px #0000001a;
+    border-radius: 2px;
+    margin-bottom: 15px;
+}
+
+.analytics__body{
+    min-height: 400px;
+}

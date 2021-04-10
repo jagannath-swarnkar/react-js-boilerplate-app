@@ -1,9 +1,11 @@
 import { useContext } from 'react'
 import ThemeContext from '../context/ThemeContext'
+import { customTheme } from '../lib/theme';
 
 const useTheme = () => {
-    const theme = useContext(ThemeContext) || 'light'
-    return [theme]
+    const themeType = useContext(ThemeContext) || 'light';
+    const theme = customTheme[themeType]
+    return [theme, themeType]
 }
 
 export default useTheme

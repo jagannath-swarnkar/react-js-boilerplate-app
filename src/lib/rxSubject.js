@@ -7,3 +7,7 @@ export const DialogOpen = new Subject();
 export const DialogClose = new Subject();
 
 export const PageLoader = new Subject();
+
+export const SnackbarSubject = new Subject();
+
+export const SideNavbarToggleSubject = new Subject();

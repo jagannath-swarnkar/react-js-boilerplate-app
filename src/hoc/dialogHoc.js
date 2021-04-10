@@ -70,7 +70,7 @@ class DialogHoc extends React.Component {
   };
 
   close_dialog = (type, flag = false) => {
-    console.log("sadad", type);
+    // console.log("sadad", type);
     let stateObject = { ...this.state };
 
     let dialogData = { ...stateObject.dialog };
@@ -109,7 +109,7 @@ class DialogHoc extends React.Component {
         {Object.values(this.state.dialog).map(
           (dialog, index) => {
             // return <div>Drawer data</div>;
-            console.log("ASDads", dialog);
+            // console.log("ASDads", dialog);
             return (
               <Dialog
                 open={dialog.open}

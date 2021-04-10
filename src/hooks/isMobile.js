@@ -1,9 +1,8 @@
-// import React from 'react';
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const isMobile = () => {
-  // const mobileView = useSelector((state) => state.isMobile);
-  return [true];
+  const mobileView = useSelector((state) => state.store?.isMobile) || false;
+  return [mobileView];
 };
 
 export default isMobile;

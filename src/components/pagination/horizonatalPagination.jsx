@@ -24,7 +24,7 @@ const HorizonatalPagination = (props) => {
 
     useEffect(() => {
         if(pageChange){
-            console.log('horizontal scroller is hitting');
+            // console.log('horizontal scroller is hitting');
             if(dataCount && totalCount){
                 if(dataCount < totalCount){
                     pageEventHandler && pageEventHandler()

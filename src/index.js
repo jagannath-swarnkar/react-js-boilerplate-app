@@ -6,13 +6,15 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import configureStore from './redux/store';
+import Snackbar from './hoc/Snackbar';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={configureStore}>
       <App />
     </Provider>
-  </React.StrictMode>,
+    <Snackbar></Snackbar>     
+  </React.Fragment>,
   document.getElementById('root')
   );
 
