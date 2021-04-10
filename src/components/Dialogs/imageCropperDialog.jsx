@@ -39,7 +39,8 @@ const initialState = {
         alt: false,
         width: true,
         height: true
-    }
+    },
+    loading: false
 }
 /**
  * @description this is an Imgage cropper dialog
@@ -134,6 +135,7 @@ class ImageCropperDialog extends React.Component  {
      * @param res
      */
     handleClose = async (res) => {
+        this.setState({loading: true})
         if(res){            
             const image = await this.uploadImage(
                 this.state.croppedImageUrl 
@@ -346,7 +348,7 @@ class ImageCropperDialog extends React.Component  {
                             Cancel
                         </Button>
                         <Button onClick={()=>this.handleClose(1)} className="white header_color dialog-btn">
-                            { 'Submit'}
+                            { this.state.loading ? "Loading..." : 'Submit'}
                         </Button>
                     </DialogActions>
                     {

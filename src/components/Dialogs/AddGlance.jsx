@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import Input from '../input'
 import Button from '../buttons'
+import { addNewGlanceApi } from '../../services/glance.service'
+import { showToast } from '../../lib/global'
 
 const initialState = {
     imageUrl: "",
@@ -11,6 +13,7 @@ const initialState = {
 
 const AddGlance = (props) => {
     const [state, setState] = useState(initialState)
+    const [loading, setLoading] = useState(false);
 
     const handleSetState = (value, field) => {
         setState(prev=>({
@@ -20,11 +23,22 @@ const AddGlance = (props) => {
     }
     const handleFormSubmit = (e) => {
         e.preventDefault()
+        setLoading(true)
         if(!state.imageUrl || !state.headerText) return;
 
         // call api here to store data
-        console.log(state);
-        props?.onClose();
+        addNewGlanceApi(state).then(res=>{
+            if(res && res.data){
+                showToast(res.data.message, 'success')
+            }
+            setLoading(false)
+            props?.handleSubmit()
+            props?.onClose();
+        }).catch(error=>{
+            console.error(error)
+            setLoading(false)
+            showToast(error?.response?.data?.message || "Failed to add data", 'error')
+        })
     }
 
     return (
@@ -89,7 +103,7 @@ const AddGlance = (props) => {
                                 className="col-xs-6 col-sm-5 col-md-5 mt-3"
                                 id="add-glance-btn"
                                 >
-                                Submit
+                                {loading ? "Loading...":"Submit"}
                             </Button>
                         </div>
                     </form>

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { DialogOpen, DrawerClose, DrawerOpen, PageLoader, SnackbarSubject } from "./rxSubject"
+import { setLocalStorage } from './session';
 
 /**
 * @description method to open drawer
@@ -84,4 +85,12 @@ export const detectDevice = () => {
  */
 export const showToast = (message, variant, duration) => {
   return SnackbarSubject.next({message, variant, duration})
+}
+
+export const setSessionData = (data) => {
+  setLocalStorage('email', data?.email);
+  setLocalStorage('userId', data?.userId);
+  setLocalStorage('firstName', data?.firstName);
+  setLocalStorage('role', data?.role);
+  setLocalStorage('status', data?.status);
 }

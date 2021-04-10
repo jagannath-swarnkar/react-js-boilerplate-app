@@ -4,37 +4,28 @@ import { useHistory } from 'react-router'
 import Button from '../../components/buttons'
 import CustomCheckbox from '../../components/checkbox'
 import Input from '../../components/input'
-import { showToast } from '../../lib/global'
+import { setSessionData, showToast } from '../../lib/global'
 import { getLocalStorage, removeLocalStorageKey, setLocalStorage } from '../../lib/session'
 import {LOGIN_POSTER} from '../../lib/config';
+import { loginApi } from '../../services/login.service'
 
 const LoginPage = () => {
     const history = useHistory()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(Boolean(getLocalStorage('rememberMe')))
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmitForm = (e) => {
-        e.preventDefault();
-
-        if(!email || !password) {
-            showToast("Email and password fields are requrired!", 'error')
-        };
-
+    useEffect(()=>{
         if(rememberMe){
-            setLocalStorage('rememberMe', true);
-            setLocalStorage('email', email);
-            setLocalStorage('password', password);
-        }else{
-            removeLocalStorageKey('rememberMe')
-            removeLocalStorageKey('email')
-            removeLocalStorageKey('password')
+            const i_email = getLocalStorage('email');
+            const i_password = getLocalStorage('password');
+            setEmail(i_email);
+            setPassword(i_password)
         }
+    },[])
+    
 
-        // call login api and redirect to homepage
-        setLocalStorage('token', 'something')
-        history.push('/')
-    }
     const handleFormInput = (event, key) => {
         const value = event.target.value;
         switch(key){
@@ -49,20 +40,46 @@ const LoginPage = () => {
         }
     }
 
+    const handleSubmitForm = (e) => {
+        e.preventDefault();
+        setLoading(true)
+        if(!email || !password) {
+            showToast("Email and password fields are requrired!", 'error')
+        };
+
+        if(rememberMe){
+            setLocalStorage('rememberMe', true);
+            setLocalStorage('email', email);
+            setLocalStorage('password', password);
+        }else{
+            removeLocalStorageKey('rememberMe')
+            removeLocalStorageKey('email')
+            removeLocalStorageKey('password')
+        }
+        const payload = {email, password}
+
+        // call login api and redirect to homepage
+        loginApi(payload).then(res=>{
+            setLoading(false)
+            if(res && res.data && res.data.data){
+                showToast(res.data.message, 'success')
+                setLocalStorage('token', res.data.data.token)
+                history.push('/');
+                setSessionData(res.data.data)
+            }
+        }).catch(error=>{
+            console.error(error)
+            setLoading(false)
+            showToast(error?.response?.data?.message || "Falied to login!", 'error')
+        })
+    }
+    
+
     const handleRememberMe = (event) => {
         const value = event.target.checked || false;
         setRememberMe(value)
     }
 
-    useEffect(()=>{
-        // console.log('rememberMe',rememberMe)
-        if(rememberMe){
-            const i_email = getLocalStorage('email');
-            const i_password = getLocalStorage('password');
-            setEmail(i_email);
-            setPassword(i_password)
-        }
-    },[])
     
     return (
         <div className="login_page">
@@ -110,7 +127,7 @@ const LoginPage = () => {
                                 type='submit'
                                 role="button"
                                 className='login_btn'>
-                                LogIn
+                                {loading ? "loading..." : "Log In"}
                             </Button>
                         </form>
                     </div>

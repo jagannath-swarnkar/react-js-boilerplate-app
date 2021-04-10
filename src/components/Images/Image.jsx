@@ -7,7 +7,8 @@ const Image = ({
     alt,
     className,
     style,
-    onClick
+    onClick,
+    placeholder=""
 }) => {
     return (
         <React.Fragment>
@@ -19,6 +20,7 @@ const Image = ({
                 className={className}
                 style={style}
                 onClick={onClick}
+                onError={(e)=>e.target.src=placeholder}
                 />
         </React.Fragment>
     )

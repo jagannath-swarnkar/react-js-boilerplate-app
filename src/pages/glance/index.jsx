@@ -1,16 +1,21 @@
 import { Button } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ImageCropperDialog from '../../components/Dialogs/imageCropperDialog'
 import Layout from '../../components/Layout'
 import useTheme from '../../hooks/useTheme'
-import { open_dialog } from '../../lib/global'
+import { open_dialog, showToast } from '../../lib/global'
+import { addNewGlanceApi, getGlanceApi } from '../../services/glance.service'
 import TableData from './tableData'
 
 const GlancePage = () => {
     const [theme] = useTheme()
     const cropperDialogRef = React.useRef();
-    const [tableData, setTableData] = useState([])
+    const [tableData, setTableData] = useState([]);
+    const [totalCount, setTotalCount] = useState(0)
 
+    useEffect(()=>{
+        getGlanceData()
+    },[])
     const cardStyle = {
         backgroundColor: theme.card.bgColor,
         color: theme.textColor,
@@ -24,8 +29,18 @@ const GlancePage = () => {
      * @date 2020-11-16
      * @param profilePic image url
      */
-    const getProfilePic = (profilePic) => {
-        setTableData(prev=>[{url: profilePic}, ...prev])
+    const getProfilePic = (url) => {
+        // setTableData(prev=>[{url: profilePic}, ...prev]);
+        const payload = {imageUrl: url}
+        addNewGlanceApi(payload).then(res=>{
+            if(res && res.data){
+                showToast(res.data.message, 'success');
+                getGlanceData()
+            }
+        }).catch(error=>{
+            console.error(error)
+            showToast(error?.response?.data?.message || "Failed to add data", 'error')
+        })
     }
 
 
@@ -54,7 +69,29 @@ const GlancePage = () => {
     }
 
     const handleAddNew = () => {
-        open_dialog("ADD_GLANCE", {},'top')
+        open_dialog("ADD_GLANCE", {
+            handleSubmit: handleRefresh
+        },'top')
+    }
+
+    const handleRefresh = () => {
+        getGlanceData()
+    }
+
+    const getGlanceData = () => {
+        const list = {
+            limit: 20,
+            skip: 0
+        }
+        getGlanceApi(list).then((res)=>{
+            if(res?.data?.data){
+                setTableData(res?.data?.data?.data);
+                setTotalCount(res?.data?.data?.totalCount)
+            }
+            console.log(res?.data?.data)
+        }).catch(error=>{
+            console.error('error', error)
+        })
     }
     return (
         <Layout>
@@ -67,7 +104,7 @@ const GlancePage = () => {
                                 className={"d-none"}
                                 id="contained-button-file"
                                 onChange={changeDP}
-                                multiple
+                                // multiple
                                 type="file"
                             />
                             <label htmlFor="contained-button-file">
@@ -100,7 +137,10 @@ const GlancePage = () => {
                     </div>
                     <hr/>
                     <div className="col-12 table_data py-3">
-                        <TableData tableData={tableData} />
+                        <TableData 
+                            handleRefresh={handleRefresh}
+                            tableData={tableData} 
+                            totalCount={totalCount} />
                     </div>
 
                 </div>
