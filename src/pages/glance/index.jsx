@@ -53,13 +53,14 @@ const GlancePage = () => {
      */
      const changeDP = (e) => {
         const config = {
+            fieldTitle: "Header Text",
             crop: {
                 // aspect: 9/10,
                 unit: '%',
-                width: 50,
-                height: 50,
-                x: 25,
-                y: 10
+                width: 100,
+                height: 100,
+                // x: 25,
+                // y: 10
             }
         }
         if (e) {

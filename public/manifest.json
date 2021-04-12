@@ -1,6 +1,6 @@
 {
-  "short_name": "React Boilerplate",
-  "name": "React js Boilerplate APP",
+  "short_name": "Glance Admin",
+  "name": "Glance Admin",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,16 +8,14 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "purpose": "maskable"
+      "type": "image/png"
     },
     {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
+        "src": "/android-chrome-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
     }
   ],
   "start_url": ".",

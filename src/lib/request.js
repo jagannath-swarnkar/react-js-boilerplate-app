@@ -1,11 +1,13 @@
 import Axios from 'axios';
 import * as config from './config';
+import { showToast } from './global';
 import { getLocalStorage } from './session';
 
 const LANG = getLocalStorage('lang');
 const getUrl = (endpoint) => {
     return config.API_HOST + endpoint;
 }
+
 
 /**
  * @description POST method to call post api (without token)
@@ -80,12 +82,14 @@ export const PostWithToken = async(endpoint, data) => {
  */
 export const GetWithToken = async(endpoint) => {
     Axios.defaults.headers.common['authorization'] = await getLocalStorage('token');
-    return Axios.get(getUrl(endpoint), {
-        headers: {
-            'Content-Type': 'application/json',
-            'language': LANG || 'en'
-        }
-    })
+    return Axios.get(getUrl(endpoint)
+    // , {
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'language': LANG || 'en'
+    //     }
+    // }
+    )
 }
 
 
@@ -140,3 +144,28 @@ export const DeleteWithToken = async(endpoint, data) => {
         }
     })
 }
+
+
+Axios.interceptors.request.use((request)=>{
+    request.headers['Content-Type'] = "application/json";
+    request.headers['language'] = LANG || 'en'
+    return request
+}, function (error) {
+    return Promise.reject(error);
+}, { synchronous: true })
+
+
+
+Axios.interceptors.response.use((response)=>{
+    console.log('response', response)
+    return Promise.resolve(response)
+    }, function (error) {
+    if(!error || !error.response){
+        return Promise.reject(error);
+    }
+    if(error?.response?.status === 401){
+        showToast("Session Exprired!", 'info')
+        return window.location.href = "/auth"
+    }
+    return Promise.reject(error);
+  })
