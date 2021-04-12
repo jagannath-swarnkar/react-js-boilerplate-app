@@ -157,7 +157,7 @@ Axios.interceptors.request.use((request)=>{
 
 
 Axios.interceptors.response.use((response)=>{
-    console.log('response', response)
+    // console.log('response', response)
     return Promise.resolve(response)
     }, function (error) {
     if(!error || !error.response){

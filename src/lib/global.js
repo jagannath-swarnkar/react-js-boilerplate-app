@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DialogOpen, DrawerClose, DrawerOpen, PageLoader, SnackbarSubject } from "./rxSubject"
+import { DialogOpen, DrawerClose, DrawerOpen, handleLoader, PageLoader, SnackbarSubject } from "./rxSubject"
 import { setLocalStorage } from './session';
 
 /**
@@ -75,18 +75,20 @@ export const detectDevice = () => {
 
  /**
  * @description method to show toastr
- * @author jagannath
- * @date 08/04/2021
  * @param message toastr message
  * @param variant: 'variantSuccess' | 'variantError' | 'variantInfo' | 'variantWarning';
  * @param duration?: toastr duration - default: 2000 ms
  * @param vertical?: 'top' | 'bottom';
  * @param horizontal?: 'left' | 'center' | 'right';
  */
-export const showToast = (message, variant, duration) => {
-  return SnackbarSubject.next({message, variant, duration})
+export const showToast = (message, variant, duration, vertical, horizontal) => {
+  return SnackbarSubject.next({message, variant, duration, vertical, horizontal})
 }
 
+ /**
+ * @description method to add session after login
+ * @param data: Object - login response
+ */
 export const setSessionData = (data) => {
   setLocalStorage('email', data?.email);
   setLocalStorage('userId', data?.userId);
@@ -94,3 +96,18 @@ export const setSessionData = (data) => {
   setLocalStorage('role', data?.role);
   setLocalStorage('status', data?.status);
 }
+
+ /**
+ * @description method to start full page loader
+ */
+export const startLoader = () => {
+  return handleLoader.next(true);
+};
+
+
+ /**
+ * @description method to start full page loader
+ */
+export const stopLoader = () => {
+  return handleLoader.next(false);
+};

@@ -18,6 +18,7 @@ import DrawerHoc from './hoc/drawerHoc';
 import DialogHoc from './hoc/dialogHoc';
 import { customTheme } from './lib/theme';
 import { actionThemeChange } from './redux/actions/home.action';
+import LoaderHoc from './hoc/loader';
 
 function App(props) {
   const dispatch = useDispatch()
@@ -74,7 +75,7 @@ function App(props) {
           </div>
           <DrawerHoc></DrawerHoc>
           <DialogHoc></DialogHoc>   
-          
+          <LoaderHoc></LoaderHoc>
         </ThemeContext.Provider>
       </Router>
       <style jsx="true">{`

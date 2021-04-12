@@ -12,7 +12,7 @@ import Image from '../../components/Images/Image';
 import useTheme from '../../hooks/useTheme';
 import {BROKEN_IMAGE} from '../../lib/config';
 import { deleteGlanceApi } from '../../services/glance.service';
-import { showToast } from '../../lib/global';
+import { showToast, startLoader, stopLoader } from '../../lib/global';
 import CustomDataLoader from '../../components/loader/PageLoader';
 // const rows = glanceData
 
@@ -36,11 +36,14 @@ export default function CustomizedTables(props) {
   useEffect(()=>{
     if(tableData?.length){
       setLoading(false)
+      stopLoader()
     }
   },[tableData]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    startLoader()
+    props.getGlanceData?.(newPage)
   };
 
   const columns = [
@@ -94,11 +97,12 @@ export default function CustomizedTables(props) {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
+    startLoader()
+    props.getGlanceData?.(0,event.target.value)
     setPage(0);
   };
 
   const renderComponent = (data, value, index) => {
-    console.log('index', data, value, index)
     if(data.index){
       return index+1
     }
@@ -125,17 +129,12 @@ export default function CustomizedTables(props) {
   }
 
   
-    
-
-
-  
-
   return (
     <React.Fragment>
         <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
             
-            {loading ?<caption className="text-center"><CustomDataLoader type="normal" /></caption>  : <></>}
+            {loading ?<caption className="text-center">Loading...</caption>  : <></>}
             {!tableData?.length && !loading ?<caption className="larger text-center">No Data Found!</caption>:<></>}
             <TableHead>
                 <TableRow>
@@ -155,7 +154,7 @@ export default function CustomizedTables(props) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => {
+                {tableData.map((row, rowIndex) => {
                 return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code || rowIndex}>
                     {columns.map((column, index) => {
@@ -177,7 +176,7 @@ export default function CustomizedTables(props) {
         </TableContainer>
         {tableData?.length ?
           <TablePagination
-            rowsPerPageOptions={[10, 20, 100]}
+            rowsPerPageOptions={[5, 10, 20, 50]}
             component="div"
             count={props?.totalCount || tableData?.length}
             rowsPerPage={rowsPerPage}

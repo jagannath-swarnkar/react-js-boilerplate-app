@@ -47,3 +47,20 @@
 .MuiButtonBase-root.MuiButton-root.MuiButton-text.Mui-disabled{
     opacity: 0.5;
 }
+
+//loader
+.loader {
+    position: fixed;
+    z-index: 999999;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $black6;
+    overflow: hidden;
+    height: 100%;
+  }
+  

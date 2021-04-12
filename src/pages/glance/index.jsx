@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ImageCropperDialog from '../../components/Dialogs/imageCropperDialog'
 import Layout from '../../components/Layout'
 import useTheme from '../../hooks/useTheme'
-import { open_dialog, showToast } from '../../lib/global'
+import { open_dialog, showToast, startLoader, stopLoader } from '../../lib/global'
 import { addNewGlanceApi, getGlanceApi } from '../../services/glance.service'
 import TableData from './tableData'
 
@@ -12,9 +12,11 @@ const GlancePage = () => {
     const cropperDialogRef = React.useRef();
     const [tableData, setTableData] = useState([]);
     const [totalCount, setTotalCount] = useState(0)
+    const limit = 10;
 
     useEffect(()=>{
-        getGlanceData()
+        startLoader()
+        getGlanceData(0)
     },[])
     const cardStyle = {
         backgroundColor: theme.card.bgColor,
@@ -82,19 +84,20 @@ const GlancePage = () => {
         getGlanceData()
     }
 
-    const getGlanceData = () => {
+    const getGlanceData = (pageCount=0, dataLimit=limit) => {
         const list = {
-            limit: 20,
-            skip: 0
+            limit: dataLimit,
+            skip: pageCount*10
         }
         getGlanceApi(list).then((res)=>{
             if(res?.data?.data){
                 setTableData(res?.data?.data?.data);
                 setTotalCount(res?.data?.data?.totalCount)
             }
-            console.log(res?.data?.data)
+            stopLoader()
         }).catch(error=>{
-            console.error('error', error)
+            console.error('error', error);
+            stopLoader()
         })
     }
     return (
@@ -143,6 +146,7 @@ const GlancePage = () => {
                     <div className="col-12 table_data py-3">
                         <TableData 
                             handleRefresh={handleRefresh}
+                            getGlanceData={getGlanceData}
                             tableData={tableData} 
                             totalCount={totalCount} />
                     </div>
