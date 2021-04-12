@@ -7,7 +7,7 @@ export const THEME = 'dark';
 export const APP_NAME = 'Glance';
 export const APP_LOGO = LOGO
 
-export const API_HOST = 'https://glance-api.appscrip.ml';
+export const API_HOST = 'https://api.pbkscoca-cola.com';
 export const BASIC_AUTH = 'Basic bWVldC5hcHBzY3JpcEBnbWFpbC5jb206M0VtYmVkMDA3'
 
 export const DRAWER_CLOSE = "";
