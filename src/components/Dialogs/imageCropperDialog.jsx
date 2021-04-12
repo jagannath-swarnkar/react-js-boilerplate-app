@@ -142,7 +142,7 @@ class ImageCropperDialog extends React.Component  {
                 ? this.state.croppedImageUrl 
                 : this.state.src
             );
-            await this.props.getImage(image.secure_url);
+            await this.props.getImage(image.secure_url, this.state.title);
             this.setState(initialState);
         }else{
             this.setState(initialState);
@@ -283,8 +283,16 @@ class ImageCropperDialog extends React.Component  {
                         </span>
                     </DialogTitle>
                     <DialogContent>
-                        <div className="col-12 row">
-                            <div className="col-6 pb-3">
+                        <div className="col-12 row p-0 m-0">
+                                <div className="col-md-12 row py-2 p-0 pb-3">
+                                    <label className="input-label col-md-3 text-small bold m-auto">Header Text</label>
+                                    <TextInput 
+                                        placeholder="Image Title" 
+                                        value={this.state.title}
+                                        handleChange={(value)=>{this.setState({title: value})}}
+                                        className="form-control col-md-8" />
+                                </div>
+                            {/* <div className="col-6 pb-3">
                                 <label className="input-label col-md-12 text-small bold p-0 m-0">Width:</label>
                                 <TextInput 
                                     placeholder="Image Width" 
@@ -293,8 +301,8 @@ class ImageCropperDialog extends React.Component  {
                                     value={width || ''}
                                     onClick={(e)=>{this.setState({width: e.target.value})}}
                                     className="form-control col-md-12" />
-                            </div>
-                            <div className="col-6 pb-2">
+                            </div> */}
+                            {/* <div className="col-6 pb-2">
                                 <label className="input-label col-md-12 text-small bold p-0 m-0">Height:</label>
                                 <TextInput 
                                     placeholder="Image Height" 
@@ -303,7 +311,7 @@ class ImageCropperDialog extends React.Component  {
                                     value={height || ''}
                                     onClick={(e)=>{this.setState({height: e.target.value})}}
                                     className="form-control col-md-12" />
-                            </div>
+                            </div> */}
                             {
                                 title ? 
                                 <div className="col-md-12 row py-2">
@@ -347,7 +355,10 @@ class ImageCropperDialog extends React.Component  {
                             className="cancel-btn white dialog-btn">
                             Cancel
                         </Button>
-                        <Button onClick={()=>this.handleClose(1)} className="white header_color dialog-btn">
+                        <Button 
+                            disabled={!this.state.title}
+                            onClick={()=>this.handleClose(1)} 
+                            className="white header_color dialog-btn">
                             { this.state.loading ? "Loading..." : 'Submit'}
                         </Button>
                     </DialogActions>

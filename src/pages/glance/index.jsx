@@ -29,9 +29,12 @@ const GlancePage = () => {
      * @date 2020-11-16
      * @param profilePic image url
      */
-    const getProfilePic = (url) => {
+    const getProfilePic = (url, title) => {
         // setTableData(prev=>[{url: profilePic}, ...prev]);
-        const payload = {imageUrl: url}
+        const payload = {
+            imageUrl: url,
+            headerText: title
+        }
         addNewGlanceApi(payload).then(res=>{
             if(res && res.data){
                 showToast(res.data.message, 'success');
@@ -148,7 +151,7 @@ const GlancePage = () => {
             </div>
             <ImageCropperDialog
                     ref={cropperDialogRef}
-                    getImage={(url) => getProfilePic(url)} />
+                    getImage={(url, title) => getProfilePic(url, title)} />
         </Layout>
     )
 }
