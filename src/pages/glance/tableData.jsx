@@ -53,7 +53,7 @@ export default function CustomizedTables(props) {
       label: 'Preview Image',
       minWidth: 170,
       align: "center",
-      component: (url) => <Image src={url} width="50px" height="50px" className="rounded-circle" alt="glance preview image" placeholder={BROKEN_IMAGE} />
+      component: (url) => <Image src={url} width="50px" height="50px" className="rounded-circle object-fit-cover" alt="glance preview image" placeholder={BROKEN_IMAGE} />
     },
     {
       id: 'headerText',

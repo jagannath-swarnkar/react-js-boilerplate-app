@@ -4,11 +4,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const DateRangePicker = (props) => {
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
     useEffect(()=>{
-        props.handleDateChange?.({start: startDate, end: endDate})
+        props.handleDateChange?.({start: new Date(startDate).valueOf(), end: new Date(endDate).valueOf()})
     },[startDate, endDate])
     return (
         <React.Fragment>

@@ -1,124 +1,133 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import { TablePagination } from '@material-ui/core';
-import useTheme from '../../hooks/useTheme';
+import React, { useEffect, useState } from 'react';
+import CustomizedTables from '../../components/tables';
+import { startLoader, stopLoader } from '../../lib/global';
+import { getAnalyticDataApi } from '../../services/analytics';
 
 
-// const rows = glanceData
 
-const useStyles = makeStyles({
-    root: {
-      width: '100%',
-    },
-    container: {
-      maxHeight: 440,
-    },
-  });
+/**
+ * @description component to show analytics data in table for each category
+ * @author jagannath
+ * @date 13/04/2021
+ * @param eventType: String - evnet type - pageView|videoPlay|clicks|... 
+ * @param categoryTitle: String - categoryTitle - Page Views
+ * @memberof AnalyticsPage
+ */
+const TableData = (props) => {
+  const {eventType="pageView", date={}} = props;
+  const [data, setData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [columns, setColumns] = useState([]);
 
-export default function CustomizedTables(props) {
-  const classes = useStyles();
-  const [theme] = useTheme()
-  const {tableData = [], columns=[]} = props;
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  useEffect(()=>{
+    getTableAnalyticsData();
+    handleSetColumns()
+  },[eventType])
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-// console.log(columns, tableData)
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const renderComponent = (data, value, index) => {
-    // console.log('data', data)
-    if(data.index){
-      return index+1
+  useEffect(()=>{
+    console.log('---->', date)
+    if(date.start || date.end){
+      getTableAnalyticsData(0,10, date.start, date.end)
     }
-    if (typeof value === "undefined"){
-        return "N/A"
-    }
+  },[date])
 
-    if(data.id === 'completed'){
-        return String(value)
+  const getTableAnalyticsData = (
+    skip=0, 
+    limit=10,
+    startDate,
+    endDate
+    ) => {
+    startLoader()
+    const query = {
+      eventType,
+      limit,
+      skip,
+      startDate,
+      endDate
     }
-    if(data.component){
-      switch (typeof data.component){
-          case "function":
-            return data.component?.(value)
-        default:
-            return data.component
+    getAnalyticDataApi(query)
+    .then(res=>{
+      if(res && res.data && res.data.data){
+        console.log('res.data.data', res.data.data)
+        setData(res.data.data?.data)
+        setTotalCount(res.data.data?.totalCount)
+      }else{
+        setData([])
+        setTotalCount(0)
       }
+      stopLoader()
+    }).catch(error=>{
+      console.error(error);
+      stopLoader()
+    })
+  }
+
+  const handleSetColumns = () => {
+    switch (eventType){
+      case "pageView":
+          setColumns([
+              {id: "userId", label: "SL No.", type: "index"},
+              {id: "timestamp", label:"Viewed On",align:"left", type: 'date'},
+              {id: "city", label:"City",align:"left"},
+              {id: "state", label:"State",align:"left"},
+              {id: "country", label:"Country",align:"left"},
+              {id: "userId", label: "userId", align: "left"},
+          ])
+          break;
+      case "click":
+        setColumns([
+            {id: "timestamp", label:"Clicked On",align:"left", type: 'date'},
+            {id: "city", label:"City",align:"left"},
+            {id: "state", label:"State",align:"left"},
+            {id: "country", label:"Country",align:"left"},
+            {id: "userId", label: "userId", align: "left"},
+          ])
+        break;
+      case "hover":
+        setColumns([
+            {id: "timestamp", label:"Hovered On",align:"left", type: 'date'},
+            {id: "city", label:"City",align:"left"},
+            {id: "state", label:"State",align:"left"},
+            {id: "country", label:"Country",align:"left"},
+            {id: "userId", label: "userId", align: "left"},
+          ])
+        break;
+      case "download":
+        setColumns([
+            {id: "timestamp", label:"Downloaded On",align:"left", type: 'date'},
+            {id: "city", label:"City",align:"left"},
+            {id: "state", label:"State",align:"left"},
+            {id: "country", label:"Country",align:"left"},
+            {id: "userId", label: "userId", align: "left"},
+          ])
+        break;
+      case "videoPlay":
+        setColumns([
+            {id: "timestamp", label:"Played On",align:"left", type: 'date'},
+            {id: "city", label:"City",align:"left"},
+            {id: "state", label:"State",align:"left"},
+            {id: "country", label:"Country",align:"left"},
+            {id: "userId", label: "userId", align: "left"},
+          ])
+        break;
+      default:
+          setData([])
+          setColumns([])
+          break;
     }
-    return value
-      
   }
 
   return (
     <React.Fragment>
-        <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-            {tableData?.length ?<></>:<caption className="larger text-center">No Data Found!</caption>}
-            <TableHead>
-                <TableRow>
-                {columns.map((column, index) => (
-                    <TableCell
-                    style={{
-                      backgroundColor: theme.headerColor,
-                      color: "#fff",
-                      minWidth: column.minWidth,
-                      zIndex: 0
-                    }}
-                    key={index}
-                    align={column.align}
-                    >
-                    {column.label}
-                    </TableCell>
-                ))}
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => {
-                return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code || rowIndex}>
-                    {columns.map((column, index) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell 
-                            key={index}
-                            style={{color: theme.textColor}}
-                            align={column.align || "left"}>
-                            <>{renderComponent(column, value, rowIndex)}</>
-                          </TableCell>
-                        );
-                    })}
-                    </TableRow>
-                );
-                })}
-            </TableBody>
-            </Table>
-        </TableContainer>
-        {tableData?.length ?
-          <TablePagination
-            rowsPerPageOptions={[10, 20, 100]}
-            component="div"
-            count={tableData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            style={{color: theme.textColor}}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-            placeholder="No Data Found!"
-        />:<></>}
-        
+        <CustomizedTables 
+          tableData={data}
+          columns={columns}
+          totalCount={totalCount}
+          handlePageChange={getTableAnalyticsData}
+        ></CustomizedTables>
     </React.Fragment>
   );
 }
+
+
+export default TableData;
